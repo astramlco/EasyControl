@@ -72,21 +72,22 @@ class Predictor(BasePredictor):
             download_weights(base_url, os.path.dirname(base_path))
 
         # --- Download LoRA ---
-        print(f"Ensuring LoRA directory exists: {lora_local_dir}")
-        os.makedirs(lora_local_dir, exist_ok=True)
+        if not os.path.exists(lora_full_path):
+            print(f"Ensuring LoRA directory exists: {lora_local_dir}")
+            os.makedirs(lora_local_dir, exist_ok=True)
 
-        print(f"Downloading LoRA: {lora_filename} from {lora_repo_id}")
-        try:
-            hf_hub_download(
-                repo_id=lora_repo_id,
-                filename=lora_filename,
-                local_dir=lora_local_dir,
-                local_dir_use_symlinks=False,  # Recommended for Cog compatibility
-            )
-            print("LoRA download complete.")
-        except Exception as e:
-            print(f"Error downloading LoRA: {e}")
-            raise
+            print(f"Downloading LoRA: {lora_filename} from {lora_repo_id}")
+            try:
+                hf_hub_download(
+                    repo_id=lora_repo_id,
+                    filename=lora_filename,
+                    local_dir=lora_local_dir,
+                    local_dir_use_symlinks=False,  # Recommended for Cog compatibility
+                )
+                print("LoRA download complete.")
+            except Exception as e:
+                print(f"Error downloading LoRA: {e}")
+                raise
 
         # --- Load Base Model ---
         print(f"Loading base pipeline from {base_path}")
